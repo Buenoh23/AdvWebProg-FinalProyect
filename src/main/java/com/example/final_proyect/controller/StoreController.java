@@ -20,13 +20,11 @@ import java.util.stream.Collectors;
 @Controller
 public class StoreController {
 
-    // 1. Declare all the services and repos this controller needs
     private final ProductService productService;
     private final CategoryService categoryService;
     private final OrderService orderService;
     private final UserRepository userRepo;
 
-    // 2. The Constructor: This is where Spring Boot "wires" them together
     public StoreController(ProductService productService, CategoryService categoryService, 
                            OrderService orderService, UserRepository userRepo) {
         this.productService = productService;
@@ -80,13 +78,10 @@ public class StoreController {
     @PostMapping("/order/place")
     public String placeOrder(@RequestParam Map<String, String> allParams, Principal principal) {
         try {
-            // 3. Find out exactly who is logged in right now
             String email = principal.getName();
-            
-            // 4. Use the wired UserRepository to get their real user record
+
             User customer = userRepo.findByEmail(email); 
 
-            // Extract the cart items from the HTML form
             Map<Long, Integer> cartItems = allParams.entrySet().stream()
                 .filter(e -> e.getKey().startsWith("qty_"))
                 .filter(e -> !e.getValue().trim().isEmpty() && Integer.parseInt(e.getValue()) > 0)
@@ -95,7 +90,6 @@ public class StoreController {
                     e -> Integer.parseInt(e.getValue())
                 ));
 
-            // 5. Use the wired OrderService to safely create the order!
             orderService.createOrder(customer.getId(), cartItems); 
 
             return "redirect:/order/history?success=true";
@@ -104,18 +98,15 @@ public class StoreController {
         }
     }
 
-    // 1. Show the Customer's Order History
     @GetMapping("/order/history")
     public String showOrderHistory(Principal principal, Model model) {
         String email = principal.getName();
         User customer = userRepo.findByEmail(email);
-        
-        // Fetch only the orders belonging to this specific customer
+
         model.addAttribute("orders", orderService.getMyOrders(customer.getId()));
         return "order-history";
     }
 
-    // 2. Show the specific Order Receipt (Details)
     @GetMapping("/order/{id}")
     public String showOrderReceipt(@org.springframework.web.bind.annotation.PathVariable Long id, Principal principal, Model model) {
         String email = principal.getName();
@@ -123,8 +114,6 @@ public class StoreController {
         
         var order = orderService.getOrderById(id);
 
-        // SECURITY CHECK: Ownership Enforcement! 
-        // If the order doesn't exist, or it belongs to a different customer, block them!
         if (order == null || !order.getCustomer().getId().equals(customer.getId())) {
             return "redirect:/403"; 
         }
@@ -134,7 +123,6 @@ public class StoreController {
         return "order-receipt";
     }
 
-    // 3. The Forbidden Error Page
     @GetMapping("/403")
     public String accessDenied() {
         return "403";

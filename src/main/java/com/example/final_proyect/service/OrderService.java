@@ -31,30 +31,26 @@ public class OrderService {
         this.userRepo = userRepo;
     }
 
-    // 1. Create a new multi-item order
     @Transactional
     public OrderEntity createOrder(Long customerId, Map<Long, Integer> cartItems) {
         User customer = userRepo.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
 
-        // Setup the initial Order record
         OrderEntity order = new OrderEntity();
         order.setCustomer(customer);
         order.setCreatedAt(LocalDateTime.now());
         order.setStatus("NEW");
-        order.setTotal(BigDecimal.ZERO); // We will calculate this securely below
+        order.setTotal(BigDecimal.ZERO);
 
-        // Save the order first so we have an ID to attach the OrderItems to
         order = orderRepo.save(order);
 
         BigDecimal finalTotal = BigDecimal.ZERO;
 
-        // Loop through the "cart" (Map of ProductId -> Quantity)
         for (Map.Entry<Long, Integer> entry : cartItems.entrySet()) {
             Long productId = entry.getKey();
             Integer qty = entry.getValue();
 
-            if (qty == null || qty <= 0) continue; // Skip items with 0 quantity
+            if (qty == null || qty <= 0) continue;
 
             Product product = productService.findById(productId);
             
@@ -66,35 +62,29 @@ public class OrderService {
                 throw new IllegalArgumentException("Not enough stock for: " + product.getName());
             }
 
-            // Deduct from inventory
             product.setStockQty(product.getStockQty() - qty);
-            productService.saveProduct(product); // Save the new inventory count
+            productService.saveProduct(product);
 
-            // Create the individual Order Item
             OrderItem item = new OrderItem();
             item.setOrder(order);
             item.setProduct(product);
             item.setQty(qty);
-            item.setUnitPrice(product.getPrice()); // Snapshot the price NOW!
+            item.setUnitPrice(product.getPrice());
 
             orderItemRepo.save(item);
 
-            // Calculate the total for this item row (qty * price) and add to the grand total
             BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(qty));
             finalTotal = finalTotal.add(itemTotal);
         }
 
-        // Failsafe: Prevent empty orders
         if (finalTotal.compareTo(BigDecimal.ZERO) == 0) {
             throw new IllegalArgumentException("Order must contain at least one valid item.");
         }
 
-        // Save the final calculated total
         order.setTotal(finalTotal);
         return orderRepo.save(order);
     }
 
-    // 2. Update status (Admin Only)
     @Transactional
     public OrderEntity updateOrderStatus(Long orderId, String newStatus) {
         OrderEntity order = orderRepo.findById(orderId)
@@ -102,17 +92,15 @@ public class OrderService {
 
         String currentStatus = order.getStatus();
 
-        // Enforce the Terminal State rule
         if ("FULFILLED".equals(currentStatus) || "CANCELLED".equals(currentStatus)) {
             throw new IllegalStateException("Cannot change the status of a terminal order.");
         }
 
-        // Enforce the Stock Restoration rule
         if ("CANCELLED".equals(newStatus)) {
             List<OrderItem> items = orderItemRepo.findByOrderId(orderId);
             for (OrderItem item : items) {
                 Product p = item.getProduct();
-                p.setStockQty(p.getStockQty() + item.getQty()); // Give the stock back
+                p.setStockQty(p.getStockQty() + item.getQty());
                 productService.saveProduct(p);
             }
         }
@@ -121,7 +109,6 @@ public class OrderService {
         return orderRepo.save(order);
     }
 
-    // 3. Helper methods to fetch data for the UI
     public List<OrderEntity> getMyOrders(Long customerId) {
         return orderRepo.findByCustomerId(customerId);
     }

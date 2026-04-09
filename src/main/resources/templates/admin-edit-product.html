@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        .edit-form { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        .btn-success { padding: 10px; background-color: #28a745; color: white; border: none; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>Edit Product</h1>
+    <a th:href="@{/admin/dashboard}">← Back to Dashboard</a>
+    <hr>
+
+    <form th:action="@{'/admin/product/' + ${product.id} + '/edit'}" method="post" class="edit-form">
+        <label>Name: 
+            <input type="text" name="name" th:value="${product.name}" required />
+        </label>
+        
+        <label>Description: 
+            <input type="text" name="description" th:value="${product.description}" required />
+        </label>
+        
+        <label>Price: 
+            <input type="number" name="price" th:value="${product.price}" step="0.01" min="0" required />
+        </label>
+        
+        <label>Stock Quantity: 
+            <input type="number" name="stockQty" th:value="${product.stockQty}" min="0" required />
+        </label>
+        
+        <label>Category: 
+            <select name="categoryId" required>
+                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${cat.id == product.category.id}"></option>
+            </select>
+        </label>
+
+        <button type="submit" class="btn-success">Save Changes</button>
+    </form>
+</body>
+</html>

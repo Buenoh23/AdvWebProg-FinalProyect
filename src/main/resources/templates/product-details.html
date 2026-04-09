@@ -3,31 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Product Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; border: 1px solid #ccc; }
+        .category-text { color: gray; }
+        .price-text { color: green; }
+        .out-of-stock { color: red; font-weight: bold; }
+        .btn-primary { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 16px; text-decoration: none; display: inline-block; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; border: 1px solid #ccc;">
-
+<body>
     <a th:href="@{/catalog}">← Back to Catalog</a>
     <hr>
 
     <h1 th:text="${product.name}">Product Name</h1>
-    <h3 th:text="${product.category.name}" style="color: gray;">Category</h3>
+    <h3 th:text="${product.category.name}" class="category-text">Category</h3>
     
     <p><strong>Description:</strong> <span th:text="${product.description}">Description goes here</span></p>
     
-    <h2 th:text="${'$' + product.price}" style="color: green;">$0.00</h2>
+    <h2 th:text="${'$' + product.price}" class="price-text">$0.00</h2>
     
     <p>
         <strong>Stock Available:</strong> 
         <span th:text="${product.stockQty}">0</span>
-        <span th:if="${product.stockQty == 0}" style="color: red; font-weight: bold;">(OUT OF STOCK)</span>
+        <span th:if="${product.stockQty == 0}" class="out-of-stock">(OUT OF STOCK)</span>
     </p>
 
     <hr>
-    <a th:href="@{/order/build}">
-        <button style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 16px;">
-            Go to Order Builder
-        </button>
-    </a>
-
+    <a th:href="@{/order/build}" class="btn-primary">Go to Order Builder</a>
 </body>
 </html>

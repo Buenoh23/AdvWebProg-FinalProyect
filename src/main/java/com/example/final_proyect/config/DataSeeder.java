@@ -30,7 +30,6 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // 1. Create Admin User (if not exists)
         if (userRepo.findByEmail("admin@example.com") == null) {
             User admin = new User();
             admin.setName("System Admin");
@@ -41,10 +40,8 @@ public class DataSeeder implements CommandLineRunner {
             System.out.println("Seeded Admin Account.");
         }
 
-        // 2. Create the 6 Required Seed Products (if database is empty)
         if (productRepo.count() == 0) {
             
-            // Create Categories
             Category apparel = new Category();
             apparel.setName("Apparel");
             apparel = categoryRepo.save(apparel);
@@ -53,11 +50,10 @@ public class DataSeeder implements CommandLineRunner {
             electronics.setName("Electronics");
             electronics = categoryRepo.save(electronics);
 
-            // Create 6 Products (Mixing up prices, stock, and names to test our filters)
             createProduct("Campus Hoodie", "Warm and cozy", "45.00", 100, apparel);
             createProduct("Coffee Mug", "Ceramic with logo", "12.50", 50, apparel);
             createProduct("USB Flash Drive", "32GB storage", "15.00", 200, electronics);
-            createProduct("Laptop Sticker", "Vinyl decal", "3.00", 0, apparel); // 0 stock to test filter
+            createProduct("Laptop Sticker", "Vinyl decal", "3.00", 0, apparel);
             createProduct("Wireless Mouse", "Bluetooth mouse", "25.00", 15, electronics);
             createProduct("Textbook Organizer", "Keep desk clean", "18.00", 30, apparel);
 
@@ -65,7 +61,6 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
-    // Quick helper method to make creating products cleaner
     private void createProduct(String name, String desc, String price, int stock, Category cat) {
         Product p = new Product();
         p.setName(name);

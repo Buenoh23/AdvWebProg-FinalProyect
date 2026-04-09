@@ -17,16 +17,13 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // BCrypt password hasher required by the assignment
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Tells Spring to use our Database user service and the BCrypt encoder
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        // CRITICAL FIX: Pass the userDetailsService directly into the constructor
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
@@ -36,13 +33,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**").permitAll() // Allow styling
-                .requestMatchers("/register", "/login").permitAll() // Anyone can register/login
-                .requestMatchers("/admin/**").hasRole("ADMIN") // ONLY Admins can access /admin URLs
-                .anyRequest().authenticated() // Everything else requires you to be logged in
+                .requestMatchers("/css/**", "/js/**").permitAll()
+                .requestMatchers("/register", "/login").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .defaultSuccessUrl("/catalog", true) // After login, go to catalog
+                .defaultSuccessUrl("/catalog", true)
                 .permitAll()
             )
             .logout(logout -> logout
@@ -50,7 +47,7 @@ public class SecurityConfig {
                 .permitAll()
             )
             .exceptionHandling(ex -> ex
-                .accessDeniedPage("/403") // If a customer tries to open an admin page, show HTTP 403
+                .accessDeniedPage("/403")
             );
 
         return http.build();

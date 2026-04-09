@@ -3,37 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Campus Store - Register</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; padding: 0 20px; }
+        .alert-error { color: red; margin-bottom: 15px; }
+        .auth-form { display: flex; flex-direction: column; gap: 15px; }
+        input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        .btn-primary { padding: 10px; background-color: #0056b3; color: white; border: none; cursor: pointer; font-size: 16px; }
+        .text-center { text-align: center; margin-top: 20px; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto;">
-
+<body>
     <h2>Create a Customer Account</h2>
 
-    <div th:if="${param.error}" style="color: red; margin-bottom: 15px;">
+    <div th:if="${param.error}" class="alert-error">
         That email address is already in use. Please try another.
     </div>
 
-    <form th:action="@{/register}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
-        <label>
-            Full Name:<br>
-            <input type="text" name="name" required style="width: 100%; padding: 8px;" />
+    <form th:action="@{/register}" method="post" class="auth-form">
+        <label>Full Name:
+            <input type="text" name="name" required />
         </label>
         
-        <label>
-            Email Address:<br>
-            <input type="email" name="email" placeholder="alice@example.com" required style="width: 100%; padding: 8px;" />
+        <label>Email Address:
+            <input type="email" name="email" placeholder="alice@example.com" required />
         </label>
         
-        <label>
-            Password:<br>
-            <input type="password" name="password" required style="width: 100%; padding: 8px;" />
+        <label>Password:
+            <input type="password" name="password" required />
         </label>
 
-        <button type="submit" style="padding: 10px; background-color: #0056b3; color: white; border: none; cursor: pointer;">Register</button>
+        <button type="submit" class="btn-primary">Register</button>
     </form>
 
-    <p style="text-align: center; margin-top: 20px;">
+    <p class="text-center">
         Already have an account? <a th:href="@{/login}">Log in here</a>.
     </p>
-
 </body>
 </html>

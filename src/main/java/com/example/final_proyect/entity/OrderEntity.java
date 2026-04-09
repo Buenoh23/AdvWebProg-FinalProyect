@@ -20,7 +20,7 @@ public class OrderEntity {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false)
-    private String status; // "NEW", "FULFILLED", "CANCELLED"
+    private String status;
 
     @Column(nullable = false)
     private BigDecimal total;

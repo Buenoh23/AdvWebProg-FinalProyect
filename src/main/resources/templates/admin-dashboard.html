@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
+        table { width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 40px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background-color: #f4f4f4; }
+        .alert-success { color: green; padding: 10px; border: 1px solid green; margin-bottom: 20px; background-color: #e6ffe6; }
+        .alert-error { color: red; padding: 10px; border: 1px solid red; margin-bottom: 20px; background-color: #ffe6e6; }
+        .form-inline { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+        .card { background-color: #f9f9f9; padding: 15px; margin-bottom: 20px; border: 1px solid #ddd; }
+        .btn-primary { background-color: #007bff; color: white; border: none; padding: 5px 15px; cursor: pointer; }
+        .btn-danger-link { color: red; border: none; background: none; text-decoration: underline; cursor: pointer; }
+        .status-active { color: green; font-weight: bold; }
+        .status-inactive { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header-flex">
+        <h1>System Admin Dashboard</h1>
+        <div>
+            <a th:href="@{/catalog}" style="margin-right: 15px;">View Store</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+    <hr>
+
+    <div th:if="${param.success}" class="alert-success" th:text="${param.success}"></div>
+    <div th:if="${param.error}" class="alert-error" th:text="${param.error}"></div>
+
+    <h2>1. Order Management</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer Email</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}">1</td>
+                <td th:text="${order.customer.email}">email@example.com</td>
+                <td th:text="${'$' + order.total}">$0.00</td>
+                <td th:text="${order.status}">NEW</td>
+                <td>
+                    <form th:action="@{'/admin/order/' + ${order.id} + '/status'}" method="post" class="form-inline">
+                        <select name="status">
+                            <option value="NEW" th:selected="${order.status == 'NEW'}">NEW</option>
+                            <option value="FULFILLED" th:selected="${order.status == 'FULFILLED'}">FULFILLED</option>
+                            <option value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">CANCELLED</option>
+                        </select>
+                        <button type="submit" th:disabled="${order.status == 'FULFILLED' or order.status == 'CANCELLED'}">Update</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Category Management</h2>
+    <form th:action="@{/admin/category/create}" method="post" class="form-inline">
+        <input type="text" name="name" placeholder="New Category Name" required />
+        <button type="submit" class="btn-primary">Add Category</button>
+    </form>
+    <ul style="margin-bottom: 40px;">
+        <li th:each="cat : ${categories}" th:text="${cat.name}">Category</li>
+    </ul>
+
+    <h2>3. Product Management</h2>
+    <div class="card">
+        <h3>Add New Product</h3>
+        <form th:action="@{/admin/product/create}" method="post" class="form-inline">
+            <input type="text" name="name" placeholder="Product Name" required />
+            <input type="text" name="description" placeholder="Description" required />
+            <input type="number" name="price" placeholder="Price ($)" step="0.01" min="0" required />
+            <input type="number" name="stockQty" placeholder="Stock Qty" min="0" required />
+            <select name="categoryId" required>
+                <option value="">-- Select Category --</option>
+                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+            </select>
+            <button type="submit" class="btn-primary">Create Product</button>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${products}">
+                <td th:text="${p.id}">1</td>
+                <td th:text="${p.name}">Name</td>
+                <td th:text="${'$' + p.price}">$0.00</td>
+                <td th:text="${p.stockQty}">0</td>
+                <td>
+                    <span th:if="${p.active}" class="status-active">Active</span>
+                    <span th:unless="${p.active}" class="status-inactive">Deactivated</span>
+                </td>
+                <td>
+                    <a th:href="@{'/admin/product/' + ${p.id} + '/edit'}">Edit</a> | 
+                    <form th:if="${p.active}" th:action="@{'/admin/product/' + ${p.id} + '/deactivate'}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-danger-link">Deactivate</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

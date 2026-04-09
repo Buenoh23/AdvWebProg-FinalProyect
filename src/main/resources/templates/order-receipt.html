@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Order Receipt</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        table { width: 100%; text-align: left; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background-color: #f4f4f4; }
+        .grand-total { text-align: right; margin-top: 20px; }
+        .total-amount { color: green; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto;">
-
+<body>
     <h1>Order Receipt #<span th:text="${order.id}"></span></h1>
     <a th:href="@{/order/history}">← Back to My Orders</a>
     <hr>
@@ -14,8 +21,8 @@
     <p><strong>Date:</strong> <span th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
     
     <h3>Items Purchased:</h3>
-    <table border="1" cellpadding="8" style="width: 100%; text-align: left;">
-        <thead style="background-color: #f4f4f4;">
+    <table>
+        <thead>
             <tr>
                 <th>Product</th>
                 <th>Qty</th>
@@ -33,9 +40,8 @@
         </tbody>
     </table>
 
-    <h2 style="text-align: right; margin-top: 20px;">
-        Grand Total: <span style="color: green;" th:text="${'$' + order.total}">$0.00</span>
+    <h2 class="grand-total">
+        Grand Total: <span class="total-amount" th:text="${'$' + order.total}">$0.00</span>
     </h2>
-
 </body>
 </html>

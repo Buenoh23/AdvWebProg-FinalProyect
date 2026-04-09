@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>403 Forbidden</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; padding: 0 20px; }
+        .error-code { color: red; font-size: 80px; margin-bottom: 0; }
+        .error-title { margin-top: 10px; font-size: 24px; }
+        .error-message { color: #555; margin-bottom: 30px; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center; margin-top: 100px;">
+<body>
+    <h1 class="error-code">403</h1>
+    <h2 class="error-title">Access Denied / Forbidden</h2>
+    <p class="error-message">You do not have permission to view this page or perform this action.</p>
     
-    <h1 style="color: red; font-size: 50px;">403</h1>
-    <h2>Access Denied / Forbidden</h2>
-    <p>You do not have permission to view this page or perform this action.</p>
-    
-    <br>
     <a th:href="@{/catalog}">Return to Catalog</a>
-
 </body>
 </html>

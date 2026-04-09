@@ -20,7 +20,7 @@ public class User {
     private String passwordHash;
 
     @Column(nullable = false)
-    private String role; // "ADMIN" or "CUSTOMER"
+    private String role;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Build Your Order</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        table { width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background-color: #f4f4f4; }
+        .btn-success { padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; font-size: 16px; }
+        .alert-error { color: red; padding: 10px; border: 1px solid red; margin-bottom: 20px; background-color: #ffe6e6; }
+        .qty-input { width: 60px; padding: 4px; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto;">
-
+<body>
     <h1>Build Your Order</h1>
     <a th:href="@{/catalog}">← Back to Catalog</a>
     <hr>
 
-    <div th:if="${param.error}" style="color: red; padding: 10px; border: 1px solid red; margin-bottom: 20px;" th:text="${param.error}">
+    <div th:if="${param.error}" class="alert-error" th:text="${param.error}">
         Error placing order.
     </div>
 
     <form th:action="@{/order/place}" method="post">
-        <table border="1" cellpadding="8" style="width: 100%; text-align: left; margin-bottom: 20px;">
-            <thead style="background-color: #f4f4f4;">
+        <table>
+            <thead>
                 <tr>
                     <th>Product</th>
                     <th>Price</th>
@@ -32,16 +40,13 @@
                     <td>
                         <input type="number" th:name="'qty_' + ${product.id}" 
                                min="0" th:max="${product.stockQty}" value="0" 
-                               style="width: 60px;" />
+                               class="qty-input" />
                     </td>
                 </tr>
             </tbody>
         </table>
         
-        <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; font-size: 16px;">
-            Place Order
-        </button>
+        <button type="submit" class="btn-success">Place Order</button>
     </form>
-
 </body>
 </html>

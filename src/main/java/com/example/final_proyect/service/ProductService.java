@@ -31,26 +31,22 @@ public class ProductService {
         return productRepo.findAll();
     }
 
-    // REGLA DEL PROYECTO: Soft Delete
     public void deactivateProduct(Long id) {
         Product product = findById(id);
         if (product != null) {
-            product.setActive(false); // No lo borramos, solo lo ocultamos
+            product.setActive(false);
             productRepo.save(product);
         }
     }
 
     public Page<Product> getCatalog(String name, Long categoryId, Boolean inStock, 
                                     int page, int size, String sortBy, String sortDir) {
-        
-        // Setup sorting direction
+
         Sort sort = sortDir.equalsIgnoreCase("desc") ? 
                     Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-        
-        // Create the pagination request
+
         Pageable pageable = PageRequest.of(page, size, sort);
-        
-        // Pass everything to our custom query
+
         return productRepo.searchCatalog(name, categoryId, inStock, pageable);
     }
 }

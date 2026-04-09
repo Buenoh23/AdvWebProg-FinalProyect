@@ -21,4 +21,8 @@ public class CategoryService {
     public Category createCategory(Category category) {
         return categoryRepo.save(category);
     }
+
+    public Category findById(Long id) {
+        return categoryRepo.findById(id).orElse(null);
+    }
 }

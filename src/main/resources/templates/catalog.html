@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Campus Store - Catalog</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
+        .filter-bar { background-color: #f0f0f0; padding: 15px; margin-bottom: 20px; }
+        table { width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background-color: #f4f4f4; }
+        .empty-msg { color: red; font-weight: bold; }
+        button { cursor: pointer; }
+    </style>
 </head>
 <body>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="header-flex">
         <h1>Campus Store Catalog</h1>
         <form th:action="@{/logout}" method="post">
             <button type="submit">Logout</button>
@@ -13,7 +23,7 @@
     </div>
     <hr>
 
-    <form th:action="@{/catalog}" method="get" style="background-color: #f0f0f0; padding: 15px; margin-bottom: 20px;">
+    <form th:action="@{/catalog}" method="get" class="filter-bar">
         <label>Search Name: <input type="text" name="name" th:value="${name}"/></label>
         
         <label>Category:
@@ -45,10 +55,10 @@
     </form>
 
     <div th:if="${productPage.empty}">
-        <h3 style="color: red;">No results on this page</h3>
+        <h3 class="empty-msg">No results on this page</h3>
     </div>
 
-    <table border="1" cellpadding="8" th:unless="${productPage.empty}" style="width: 100%; text-align: left;">
+    <table th:unless="${productPage.empty}">
         <thead>
             <tr>
                 <th>Name</th>
@@ -73,8 +83,6 @@
         </tbody>
     </table>
 
-    <br>
-
     <div th:unless="${productPage.empty}">
         <span th:text="'Page ' + (${productPage.number + 1}) + ' of ' + ${productPage.totalPages}">Page 1 of 1</span>
         
@@ -88,6 +96,5 @@
            Next &gt;&gt;
         </a>
     </div>
-
 </body>
 </html>
