@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Order History</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>My Orders</h1>
+        <a th:href="@{/catalog}">← Back to Catalog</a>
+    </div>
+    <hr>
+
+    <div th:if="${param.success}" style="color: green; padding: 10px; border: 1px solid green; margin-bottom: 20px;">
+        Order placed successfully!
+    </div>
+
+    <table border="1" cellpadding="8" style="width: 100%; text-align: left;">
+        <thead style="background-color: #f4f4f4;">
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}">1</td>
+                <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}">Date</td>
+                <td th:text="${'$' + order.total}">$0.00</td>
+                <td>
+                    <strong th:text="${order.status}">NEW</strong>
+                </td>
+                <td>
+                    <a th:href="@{'/order/' + ${order.id}}">View Receipt</a>
+                </td>
+            </tr>
+            <tr th:if="${orders.isEmpty()}">
+                <td colspan="5" style="text-align: center;">You haven't placed any orders yet.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

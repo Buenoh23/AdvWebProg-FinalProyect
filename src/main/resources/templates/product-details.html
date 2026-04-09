@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; border: 1px solid #ccc;">
+
+    <a th:href="@{/catalog}">← Back to Catalog</a>
+    <hr>
+
+    <h1 th:text="${product.name}">Product Name</h1>
+    <h3 th:text="${product.category.name}" style="color: gray;">Category</h3>
+    
+    <p><strong>Description:</strong> <span th:text="${product.description}">Description goes here</span></p>
+    
+    <h2 th:text="${'$' + product.price}" style="color: green;">$0.00</h2>
+    
+    <p>
+        <strong>Stock Available:</strong> 
+        <span th:text="${product.stockQty}">0</span>
+        <span th:if="${product.stockQty == 0}" style="color: red; font-weight: bold;">(OUT OF STOCK)</span>
+    </p>
+
+    <hr>
+    <a th:href="@{/order/build}">
+        <button style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 16px;">
+            Go to Order Builder
+        </button>
+    </a>
+
+</body>
+</html>

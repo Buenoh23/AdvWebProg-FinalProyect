@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Build Your Order</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto;">
+
+    <h1>Build Your Order</h1>
+    <a th:href="@{/catalog}">← Back to Catalog</a>
+    <hr>
+
+    <div th:if="${param.error}" style="color: red; padding: 10px; border: 1px solid red; margin-bottom: 20px;" th:text="${param.error}">
+        Error placing order.
+    </div>
+
+    <form th:action="@{/order/place}" method="post">
+        <table border="1" cellpadding="8" style="width: 100%; text-align: left; margin-bottom: 20px;">
+            <thead style="background-color: #f4f4f4;">
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>In Stock</th>
+                    <th>Order Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.name}">Name</td>
+                    <td th:text="${'$' + product.price}">$0.00</td>
+                    <td th:text="${product.stockQty}">0</td>
+                    <td>
+                        <input type="number" th:name="'qty_' + ${product.id}" 
+                               min="0" th:max="${product.stockQty}" value="0" 
+                               style="width: 60px;" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; font-size: 16px;">
+            Place Order
+        </button>
+    </form>
+
+</body>
+</html>

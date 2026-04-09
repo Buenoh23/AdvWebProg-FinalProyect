@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Receipt</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto;">
+
+    <h1>Order Receipt #<span th:text="${order.id}"></span></h1>
+    <a th:href="@{/order/history}">← Back to My Orders</a>
+    <hr>
+
+    <p><strong>Status:</strong> <span th:text="${order.status}">NEW</span></p>
+    <p><strong>Date:</strong> <span th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+    
+    <h3>Items Purchased:</h3>
+    <table border="1" cellpadding="8" style="width: 100%; text-align: left;">
+        <thead style="background-color: #f4f4f4;">
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.product.name}">Product Name</td>
+                <td th:text="${item.qty}">0</td>
+                <td th:text="${'$' + item.unitPrice}">$0.00</td>
+                <td th:text="${'$' + (item.unitPrice * item.qty)}">$0.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 style="text-align: right; margin-top: 20px;">
+        Grand Total: <span style="color: green;" th:text="${'$' + order.total}">$0.00</span>
+    </h2>
+
+</body>
+</html>

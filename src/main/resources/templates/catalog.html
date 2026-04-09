@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Store - Catalog</title>
+</head>
+<body>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Campus Store Catalog</h1>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+    <hr>
+
+    <form th:action="@{/catalog}" method="get" style="background-color: #f0f0f0; padding: 15px; margin-bottom: 20px;">
+        <label>Search Name: <input type="text" name="name" th:value="${name}"/></label>
+        
+        <label>Category:
+            <select name="categoryId">
+                <option value="">-- All Categories --</option>
+                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${cat.id == categoryId}"></option>
+            </select>
+        </label>
+
+        <label><input type="checkbox" name="inStock" th:checked="${inStock}"/> In Stock Only</label>
+        
+        <label>Sort By:
+            <select name="sortBy">
+                <option value="name" th:selected="${sortBy == 'name'}">Name</option>
+                <option value="price" th:selected="${sortBy == 'price'}">Price</option>
+            </select>
+        </label>
+        
+        <label>Direction:
+            <select name="sortDir">
+                <option value="asc" th:selected="${sortDir == 'asc'}">Ascending</option>
+                <option value="desc" th:selected="${sortDir == 'desc'}">Descending</option>
+            </select>
+        </label>
+
+        <input type="hidden" name="size" th:value="${size}"/>
+        <button type="submit">Apply Filters</button>
+        <a th:href="@{/catalog}">Clear</a>
+    </form>
+
+    <div th:if="${productPage.empty}">
+        <h3 style="color: red;">No results on this page</h3>
+    </div>
+
+    <table border="1" cellpadding="8" th:unless="${productPage.empty}" style="width: 100%; text-align: left;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${productPage.content}">
+                <td th:text="${product.name}">Product Name</td>
+                <td th:text="${product.category.name}">Category</td>
+                <td th:text="${product.description}">Description</td>
+                <td th:text="${'$' + product.price}">$0.00</td>
+                <td th:text="${product.stockQty}">0</td>
+                <td>
+                    <a th:href="@{'/product/' + ${product.id}}">View Details</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <div th:unless="${productPage.empty}">
+        <span th:text="'Page ' + (${productPage.number + 1}) + ' of ' + ${productPage.totalPages}">Page 1 of 1</span>
+        
+        <a th:if="${productPage.hasPrevious()}" 
+           th:href="@{/catalog(page=${productPage.number - 1}, size=${size}, sortBy=${sortBy}, sortDir=${sortDir}, name=${name}, categoryId=${categoryId}, inStock=${inStock})}">
+           &lt;&lt; Previous
+        </a>
+
+        <a th:if="${productPage.hasNext()}" 
+           th:href="@{/catalog(page=${productPage.number + 1}, size=${size}, sortBy=${sortBy}, sortDir=${sortDir}, name=${name}, categoryId=${categoryId}, inStock=${inStock})}">
+           Next &gt;&gt;
+        </a>
+    </div>
+
+</body>
+</html>
